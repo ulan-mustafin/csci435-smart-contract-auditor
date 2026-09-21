@@ -1,0 +1,10 @@
+[
+  {
+    "contract": "contracts/reentrancy_vulnerable.sol",
+    "vulnerabilities": ["reentrancy"]
+  },
+  {
+    "contract": "contracts/integer_overflow_vulnerable.sol",
+    "vulnerabilities": ["integer_overflow"]
+  }
+]
