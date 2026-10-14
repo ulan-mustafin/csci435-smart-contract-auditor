@@ -13,5 +13,17 @@ It reports precision and recall.
 - `tests/` contains tests.
 
 ## Setup
-Run `pip install -e .`.
-Set `OPENAI_API_KEY`.
+Requires Python 3.11 or newer. From a clean clone, run:
+
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e '.[dev]'
+python -m pytest -q
+```
+
+The unit tests use a fake LLM client and do not need an API key. The labeled
+benchmark inputs are `data/raw/labels.json` and the Solidity files in
+`contracts/`. `prompts/vulnerability_audit.txt` defines the audit instructions.
+For a live Gemini call, set `GEMINI_API_KEY` in your environment; do not commit
+keys. The complete benchmark runner and report generation are not yet implemented.
