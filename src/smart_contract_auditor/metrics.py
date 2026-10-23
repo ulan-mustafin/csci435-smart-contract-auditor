@@ -1,4 +1,4 @@
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 
 
@@ -38,3 +38,17 @@ def calculate_metrics(
         precision=precision,
         recall=recall,
     )
+
+
+def calculate_metrics_by_type(
+    expected: Mapping[str, set[str]],
+    findings: Mapping[str, set[str]],
+    vulnerability_types: Iterable[str],
+) -> dict[str, Metrics]:
+    return {
+        vulnerability: calculate_metrics(
+            {contract: labels & {vulnerability} for contract, labels in expected.items()},
+            {contract: labels & {vulnerability} for contract, labels in findings.items()},
+        )
+        for vulnerability in vulnerability_types
+    }
