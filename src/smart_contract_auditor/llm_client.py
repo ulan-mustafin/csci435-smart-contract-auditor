@@ -13,17 +13,6 @@ class LLMClient(Protocol):
     def ask(self, prompt: str) -> str: ...
 
 
-class OpenAIClient:
-    """Calls the OpenAI API. The key is read from ``OPENAI_API_KEY``."""
-
-    def __init__(self, model: str, temperature: float = 0.0) -> None:
-        self.model = model
-        self.temperature = temperature
-
-    def ask(self, prompt: str) -> str:
-        raise NotImplementedError
-
-
 class GeminiClient:
     """Calls the Gemini REST API. The key is read from ``GEMINI_API_KEY``."""
 

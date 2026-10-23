@@ -22,6 +22,8 @@ python -m pip install -e '.[dev]'
 python -m pytest -q
 ```
 
+On Windows, activate with `.venv\Scripts\activate` instead.
+
 The unit tests use a fake LLM client and do not need an API key. The labeled
 benchmark inputs are `data/raw/labels.json` and the Solidity files in
 `contracts/`. `prompts/vulnerability_audit.txt` defines the audit instructions.
