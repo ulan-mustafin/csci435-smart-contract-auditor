@@ -10,10 +10,14 @@ def test_load_repository_samples() -> None:
     root = Path(__file__).resolve().parents[1]
     samples = load_dataset(root / "data/raw/labels.json", root)
 
-    assert len(samples) == 2
+    assert len(samples) == 6
     assert {sample.contract: sample.vulnerabilities for sample in samples} == {
         "contracts/reentrancy_vulnerable.sol": {"reentrancy"},
         "contracts/integer_overflow_vulnerable.sol": {"integer_overflow"},
+        "contracts/reentrancy_cross_function.sol": {"reentrancy"},
+        "contracts/integer_underflow_unchecked.sol": {"integer_overflow"},
+        "contracts/reentrancy_safe.sol": set(),
+        "contracts/integer_overflow_safe.sol": set(),
     }
     assert all("pragma solidity" in sample.source_code for sample in samples)
 

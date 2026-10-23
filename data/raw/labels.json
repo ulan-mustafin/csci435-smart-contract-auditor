@@ -6,5 +6,21 @@
   {
     "contract": "contracts/integer_overflow_vulnerable.sol",
     "vulnerabilities": ["integer_overflow"]
+  },
+  {
+    "contract": "contracts/reentrancy_cross_function.sol",
+    "vulnerabilities": ["reentrancy"]
+  },
+  {
+    "contract": "contracts/integer_underflow_unchecked.sol",
+    "vulnerabilities": ["integer_overflow"]
+  },
+  {
+    "contract": "contracts/reentrancy_safe.sol",
+    "vulnerabilities": []
+  },
+  {
+    "contract": "contracts/integer_overflow_safe.sol",
+    "vulnerabilities": []
   }
 ]
