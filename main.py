@@ -1,8 +1,5 @@
-"""
-LLM-Powered Smart Contract Auditor
+from smart_contract_auditor.cli import main
 
-Project Description:
-A pipeline where an LLM reviews Solidity contracts for known vulnerabilities
-(such as reentrancy, overflow/underflow) and benchmarks its findings against a
-labeled set of vulnerable contracts to evaluate and report precision and recall.
-"""
+
+if __name__ == "__main__":
+    raise SystemExit(main())
