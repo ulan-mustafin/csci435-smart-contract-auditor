@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -90,6 +91,44 @@ def test_cli_handles_client_failure(tmp_path: Path, monkeypatch: pytest.MonkeyPa
     assert cli.main(arguments(tmp_path)) == 1
     assert "Service unavailable" in capsys.readouterr().err
     assert not (tmp_path / "reports").exists()
+
+
+def test_cli_uses_openrouter_provider(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    create_inputs(tmp_path)
+    models: list[str] = []
+
+    class FakeOpenRouter:
+        def __init__(self, model: str) -> None:
+            models.append(model)
+
+        def ask(self, prompt: str) -> str:
+            return '{"vulnerabilities": []}'
+
+    monkeypatch.setattr(cli, "OpenRouterClient", FakeOpenRouter)
+    monkeypatch.setattr(cli, "GeminiClient", lambda model: pytest.fail("Wrong provider"))
+
+    assert cli.main(arguments(tmp_path) + ["--provider", "openrouter"]) == 0
+    assert models == ["test-model"]
+
+
+def test_cli_reads_key_from_env_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    create_inputs(tmp_path)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "")
+    monkeypatch.delenv("OPENROUTER_API_KEY")
+    (tmp_path / ".env").write_text("OPENROUTER_API_KEY=from-file\n", encoding="utf-8")
+    keys: list[str | None] = []
+
+    class FakeOpenRouter:
+        def __init__(self, model: str) -> None:
+            keys.append(os.environ.get("OPENROUTER_API_KEY"))
+
+        def ask(self, prompt: str) -> str:
+            return '{"vulnerabilities": []}'
+
+    monkeypatch.setattr(cli, "OpenRouterClient", FakeOpenRouter)
+
+    assert cli.main(arguments(tmp_path) + ["--provider", "openrouter"]) == 0
+    assert keys == ["from-file"]
 
 
 @pytest.mark.parametrize("entrypoint", [["-m", "smart_contract_auditor"], ["main.py"]])

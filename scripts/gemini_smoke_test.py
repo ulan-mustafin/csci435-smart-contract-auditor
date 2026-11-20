@@ -9,32 +9,19 @@ repository root.
 
 import argparse
 import json
-import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from smart_contract_auditor.llm_client import GeminiClient  # noqa: E402
+from smart_contract_auditor.llm_client import GeminiClient, load_env_file  # noqa: E402
 from smart_contract_auditor.prompts import build_prompt, load_prompt  # noqa: E402
 
 DEFAULT_CONTRACTS = [
     ROOT / "contracts" / "reentrancy_vulnerable.sol",
     ROOT / "contracts" / "integer_overflow_vulnerable.sol",
 ]
-
-
-def load_env_file(path: Path) -> None:
-    """Copy KEY=VALUE lines from ``path`` into the environment (existing values win)."""
-    if not path.exists():
-        return
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
 
 
 def main() -> None:
