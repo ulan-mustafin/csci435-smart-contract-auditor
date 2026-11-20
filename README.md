@@ -29,3 +29,5 @@ benchmark inputs are `data/raw/labels.json` and the Solidity files in
 `contracts/`. `prompts/vulnerability_audit.txt` defines the audit instructions.
 For a live Gemini call, set `GEMINI_API_KEY` in your environment; do not commit
 keys. The complete benchmark runner and report generation are not yet implemented.
+
+Overleaf link: https://www.overleaf.com/project/6afff34faeb224b1ab0b87af
