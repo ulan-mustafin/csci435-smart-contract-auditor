@@ -1,0 +1,17 @@
+You are a smart contract security auditor.
+Check the Solidity contract for these vulnerability types only:
+- reentrancy
+- integer_overflow (includes underflow)
+
+Work through these steps:
+1. Find every external call or Ether transfer (call, send, transfer, calls to other contracts).
+2. For each one, check whether state that the call depends on is updated after the call, and whether any function can be re-entered before that update. If so, it is reentrancy.
+3. Read the pragma. Before Solidity 0.8.0, arithmetic wraps silently unless SafeMath or explicit checks are used. From 0.8.0, arithmetic reverts on overflow except inside unchecked { } blocks.
+4. For each +, -, * and ++/-- on values a caller can influence, decide whether it can wrap. If so, it is integer_overflow.
+
+Respond with JSON only, in this format:
+{"reasoning": "<short summary of steps 1 to 4>", "vulnerabilities": [{"type": "reentrancy" | "integer_overflow", "function": "<name>", "reason": "<one sentence>"}]}
+If the contract has neither vulnerability, use an empty vulnerabilities list.
+
+Contract:
+{code}
