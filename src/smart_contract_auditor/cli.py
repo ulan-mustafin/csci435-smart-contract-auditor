@@ -5,6 +5,7 @@ import sys
 from urllib.error import URLError
 
 from smart_contract_auditor.benchmark import run_benchmark
+from smart_contract_auditor.cache import CachedClient
 from smart_contract_auditor.dataset import load_dataset
 from smart_contract_auditor.llm_client import GeminiClient, LLMClient, OpenRouterClient, load_env_file
 from smart_contract_auditor.prompts import build_prompt, load_prompt
@@ -27,6 +28,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, default=Path("reports"))
     parser.add_argument("--model", required=True)
     parser.add_argument("--provider", choices=PROVIDERS, default="gemini")
+    parser.add_argument("--responses", type=Path, default=Path("results/raw/responses.jsonl"))
+    parser.add_argument("--run", type=int, default=1)
+    parser.add_argument("--offline", action="store_true", help="use only stored responses")
     args = parser.parse_args(argv)
 
     try:
@@ -36,8 +40,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise ValueError("Dataset is empty")
         template = load_prompt(args.prompt, root / args.prompts_dir)
         build_prompt(template, "")
-        load_env_file(root / ".env")
-        client = create_client(args.provider, args.model)
+        client = None
+        if not args.offline:
+            load_env_file(root / ".env")
+            client = create_client(args.provider, args.model)
+        client = CachedClient(root / args.responses, f"{args.provider}:{args.model}", client, args.run)
         run_benchmark(samples, template, client, root / args.output)
     except (OSError, ValueError, RuntimeError, URLError) as error:
         print(f"Error: {error}", file=sys.stderr)

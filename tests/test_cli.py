@@ -131,6 +131,34 @@ def test_cli_reads_key_from_env_file(tmp_path: Path, monkeypatch: pytest.MonkeyP
     assert keys == ["from-file"]
 
 
+def test_cli_offline_rerun_uses_stored_responses(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    create_inputs(tmp_path)
+
+    class FakeClient:
+        def __init__(self, model: str) -> None:
+            pass
+
+        def ask(self, prompt: str) -> str:
+            return '{"vulnerabilities": [{"type": "reentrancy"}]}'
+
+    monkeypatch.setattr(cli, "GeminiClient", FakeClient)
+    assert cli.main(arguments(tmp_path)) == 0
+    first = (tmp_path / "reports" / "results.json").read_text()
+
+    monkeypatch.setattr(cli, "GeminiClient", lambda model: pytest.fail("API called offline"))
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    assert cli.main(arguments(tmp_path) + ["--offline"]) == 0
+    assert (tmp_path / "reports" / "results.json").read_text() == first
+    assert len((tmp_path / "results/raw/responses.jsonl").read_text().splitlines()) == 1
+
+
+def test_cli_offline_fails_without_stored_response(tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
+    create_inputs(tmp_path)
+
+    assert cli.main(arguments(tmp_path) + ["--offline"]) == 1
+    assert "No stored response" in capsys.readouterr().err
+
+
 @pytest.mark.parametrize("entrypoint", [["-m", "smart_contract_auditor"], ["main.py"]])
 def test_entrypoint_help(entrypoint: list[str]) -> None:
     root = Path(__file__).resolve().parents[1]
