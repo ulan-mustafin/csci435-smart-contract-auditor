@@ -1,26 +1,42 @@
 [
   {
     "contract": "contracts/reentrancy_vulnerable.sol",
-    "vulnerabilities": ["reentrancy"]
+    "vulnerabilities": ["reentrancy"],
+    "origin": "local",
+    "solc_version": "0.7.6",
+    "pair_id": "reentrancy_withdraw"
   },
   {
     "contract": "contracts/integer_overflow_vulnerable.sol",
-    "vulnerabilities": ["integer_overflow"]
+    "vulnerabilities": ["integer_overflow"],
+    "origin": "local",
+    "solc_version": "0.7.6",
+    "pair_id": "overflow_add"
   },
   {
     "contract": "contracts/reentrancy_cross_function.sol",
-    "vulnerabilities": ["reentrancy"]
+    "vulnerabilities": ["reentrancy"],
+    "origin": "local",
+    "solc_version": "0.8.20"
   },
   {
     "contract": "contracts/integer_underflow_unchecked.sol",
-    "vulnerabilities": ["integer_overflow"]
+    "vulnerabilities": ["integer_overflow"],
+    "origin": "local",
+    "solc_version": "0.8.20"
   },
   {
     "contract": "contracts/reentrancy_safe.sol",
-    "vulnerabilities": []
+    "vulnerabilities": [],
+    "origin": "local",
+    "solc_version": "0.8.20",
+    "pair_id": "reentrancy_withdraw"
   },
   {
     "contract": "contracts/integer_overflow_safe.sol",
-    "vulnerabilities": []
+    "vulnerabilities": [],
+    "origin": "local",
+    "solc_version": "0.8.20",
+    "pair_id": "overflow_add"
   }
 ]
